@@ -62,8 +62,58 @@ function list.insertRaw() {
     fi
 }
 
-function list.update() { :;}
-function list.updateRaw() { :;}
+function list.update() {
+    local -n self="${1:?}" data="${3:?}"
+    local -i meta=(${self[3]}) siz idx="${2:?}"
+
+    if ((self == __list__ && 0 <= (idx <<= 1) && idx < ${#meta[@]})); then
+        if (((siz = ${#data[@]}) <= (len = meta[idx + 1]) && 0 <= siz)); then
+            ((self[2] += len - siz, meta[idx + 1] = siz))
+
+            self+=([ meta[idx] ]="${data}" "${data[@]:1}" [3]="${meta[*]}")
+        else
+            ((self[2] += siz - len, meta[idx + 1] = siz, meta[idx] = ${#self[@]}))
+
+            self+=("${data[@]}" [3]="${meta[*]}")
+        fi
+
+        if ((self[1] && self[1] <= self[2])); then
+            "${FUNCNAME%.*}.defrag" "${1}"
+        fi
+# @debug
+#    else
+#        echo "${FUNCNAME}: invalid condition" >&2
+#        return 1
+# @debug:end
+    fi
+}
+
+function list.updateRaw() {
+    updateRaw self idx a b c
+    local -n self="${1:?}"
+    local -i meta=(${self[3]}) siz idx="${2:?}"
+
+    if ((self == __list__ && 0 <= (idx <<= 1) && idx < ${#meta[@]})); then
+        if (((siz = ${#} - 2) <= (len = meta[idx + 1]) && 0 <= siz)); then
+            ((self[2] += len - siz, meta[idx + 1] = siz))
+
+            self+=([ meta[idx] ]="${3}" "${@:4}" [3]="${meta[*]}")
+        else
+            ((self[2] += siz - len, meta[idx + 1] = siz, meta[idx] = ${#self[@]}))
+
+            self+=("${@:3}" [3]="${meta[*]}")
+        fi
+
+        if ((self[1] && self[1] <= self[2])); then
+            "${FUNCNAME%.*}.defrag" "${1}"
+        fi
+# @debug
+#    else
+#        echo "${FUNCNAME}: invalid condition" >&2
+#        return 1
+# @debug:end
+    fi
+}
 function list.remove() { :;}
 function list.delete() { :;}
 function list.defrag() { :;}
