@@ -36,7 +36,7 @@ function utils.funcExists() {
 # @require >= 4.3
 # - local -n
 #
-# @example "Count the number of UTF-8 characters in a string containing emoji."
+# @example Count the number of UTF-8 characters in a string containing emoji.
 # - declare length string=$'wow\xf0\x9f\x92\xa9!'
 # - utils.utf8Length length "${string}"
 # - echo "length = ${length}"
@@ -103,7 +103,7 @@ function utils.freezeFunc() {
 # @require >= 4.3
 # - local -n
 #
-# @example "Get functions matching a pattern."
+# @example Get functions matching a pattern.
 # - declare -a funcs
 # - utils.getFuncs funcs "utils.*f*"
 # - printf "%s\n" "${funcs[@]}"
@@ -181,8 +181,4 @@ function utils.listEntries() {
             "${FUNCNAME}" "${1}" "${entry}"
         fi
     done
-}
-
-function utils.table() {
-    :
 }
