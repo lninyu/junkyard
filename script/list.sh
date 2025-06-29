@@ -156,6 +156,20 @@ function list.delete() {
     fi
 }
 
+function list.get() {
+    local -n self="${1:?}" result="${3:?}"
+    local -i meta=(${self[3]}) idx="${2:?}"
+
+    if ((self == __list__ && 0 <= (idx <<= 1) && idx < ${#meta[@]})); then
+        result=("${self[@]:meta[idx]:meta[idx + 1]}")
+# @debug
+#    else
+#        echo "${FUNCNAME}: invalid condition" >&2
+#        return 1
+# @debug:end
+    fi
+}
+
 function list.defrag() { :;}
 function list.squash() { :;}
 function list.equals() { :;}
