@@ -170,7 +170,46 @@ function list.get() {
     fi
 }
 
-function list.defrag() { :;}
-function list.squash() { :;}
+function list.defrag() {
+    local -n self="${1:?}"
+
+    if ((self == __list__)); then
+        local -i meta=(${self[3]}) idx siz
+        local temp
+
+        "${FUNCNAME%.*}.new" temp ${self[1]}
+
+        for ((siz = ${#meta[@]}, idx = 0; idx < siz; idx += 2)); do
+            temp+=("${self[@]:meta[idx]:meta[idx + 1]}" [3]+="${#temp[@]} ${meta[idx + 1]} ")
+        done
+
+        self=("${temp[@]}")
+# @debug
+#    else
+#        echo "${FUNCNAME}: invalid condition" >&2
+#        return 1
+# @debug:end
+    fi
+}
+
+function list.squash() {
+    local -n self="${1:?}"
+
+    if ((self == __list__)); then
+        local -i meta=(${self[3]}) idx siz
+
+        for ((siz = ${#meta[@]}, idx = 0; idx < siz; idx += 2)); do
+            ((meta[idx + 1])) || meta+=([idx]=\  \ )
+        done
+
+        self[3]="${meta[*]}"
+# @debug
+#    else
+#        echo "${FUNCNAME}: invalid condition" >&2
+#        return 1
+# @debug:end
+    fi
+}
+
 function list.equals() { :;}
 function list.length() { :;}
