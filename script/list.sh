@@ -19,7 +19,19 @@ function list.append() {
     fi
 }
 
-function list.appendRaw() { :;}
+function list.appendRaw() {
+    local -n self="${1:?}"
+
+    if ((self == __list__)); then
+        self+=("${@:2}" [3]+="${#self[@]} $((${#} - 1)) ")
+# @debug
+#    else
+#        echo "${FUNCNAME}: '${1}' is not a list object (invalid type ID: '${self[0]}')" >&2
+#        return 1
+# @debug:end
+    fi
+}
+
 function list.insert() { :;}
 function list.insertRaw() { :;}
 function list.update() { :;}
