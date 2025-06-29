@@ -89,7 +89,6 @@ function list.update() {
 }
 
 function list.updateRaw() {
-    updateRaw self idx a b c
     local -n self="${1:?}"
     local -i meta=(${self[3]}) siz idx="${2:?}"
 
@@ -114,8 +113,49 @@ function list.updateRaw() {
 # @debug:end
     fi
 }
-function list.remove() { :;}
-function list.delete() { :;}
+
+function list.remove() {
+    local -n self="${1:?}"
+    local -i meta=(${self[3]}) idx="${2:?}"
+
+    if ((self == __list__ && 0 <= (idx <<= 1) && idx < ${#meta[@]})); then
+        ((self[2] += meta[idx + 1], meta[idx + 1] = 0))
+
+        self[3]="${meta[*]}"
+
+        if ((self[1] && self[1] <= self[2])); then
+            "${FUNCNAME%.*}.defrag" "${1}"
+        fi
+# @debug
+#    else
+#        echo "${FUNCNAME}: invalid condition" >&2
+#        return 1
+# @debug:end
+    fi
+}
+
+function list.delete() {
+    local -n self="${1:?}"
+    local -a meta=(${self[3]})
+    local -i idx="${2:?}"
+
+    if ((self == __list__ && 0 <= (idx <<= 1) && idx < ${#meta[@]})); then
+        ((self[2] += meta[idx + 1]))
+
+        meta+=([idx]=\  \ )
+        self[3]="${meta[*]}"
+
+        if ((self[1] && self[1] <= self[2])); then
+            "${FUNCNAME%.*}.defrag" "${1}"
+        fi
+# @debug
+#    else
+#        echo "${FUNCNAME}: invalid condition" >&2
+#        return 1
+# @debug:end
+    fi
+}
+
 function list.defrag() { :;}
 function list.squash() { :;}
 function list.equals() { :;}
