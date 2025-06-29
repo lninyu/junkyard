@@ -13,7 +13,7 @@ function list.append() {
         self+=("${data[@]}" [3]+="${#self[@]} ${#data[@]} ")
 # @debug
 #    else
-#        echo "${FUNCNAME}: '${1}' is not a list object (invalid type ID: '${self[0]}')" >&2
+#        echo "${FUNCNAME}: invalid condition" >&2
 #        return 1
 # @debug:end
     fi
@@ -26,14 +26,42 @@ function list.appendRaw() {
         self+=("${@:2}" [3]+="${#self[@]} $((${#} - 1)) ")
 # @debug
 #    else
-#        echo "${FUNCNAME}: '${1}' is not a list object (invalid type ID: '${self[0]}')" >&2
+#        echo "${FUNCNAME}: invalid condition" >&2
 #        return 1
 # @debug:end
     fi
 }
 
-function list.insert() { :;}
-function list.insertRaw() { :;}
+function list.insert() {
+    local -n self="${1:?}" data="${3:?}"
+    local -i meta=(${self[3]}) idx="${2:?}"
+
+    if ((self == __list__ && 0 <= (idx <<= 1) && idx <= ${#meta[@]})); then
+        meta+=([idx]=${#self[@]} ${#data[@]} ${meta[@]:idx})
+        self+=("${data[@]}" [3]="${meta[*]}")
+# @debug
+#    else
+#        echo "${FUNCNAME}: invalid condition" >&2
+#        return 1
+# @debug:end
+    fi
+}
+
+function list.insertRaw() {
+    local -n self="${1:?}"
+    local -i meta=(${self[3]}) idx="${2:?}"
+
+    if ((self == __list__ && 0 <= (idx <<= 1) && idx <= ${#meta[@]})); then
+        meta+=([idx]=${#self[@]} ${#}-2 ${meta[@]:idx})
+        self+=("${@:3}" [3]="${meta[*]}")
+# @debug
+#    else
+#        echo "${FUNCNAME}: invalid condition" >&2
+#        return 1
+# @debug:end
+    fi
+}
+
 function list.update() { :;}
 function list.updateRaw() { :;}
 function list.remove() { :;}
