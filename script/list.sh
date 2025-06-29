@@ -211,5 +211,44 @@ function list.squash() {
     fi
 }
 
-function list.equals() { :;}
-function list.length() { :;}
+function list.equals() {
+    local -n la="${1:?}" lb="${2:?}"
+    local -i ma=(${la[3]}) mb=(${lb[3]}) as sl i1 ib
+    local -a sa sb
+
+    if ((la == __list__ && lb == __list__ && ${#ma[@]} == ${#mb[@]})); then
+        for ((as = ${#ma[@]}, i1 = 0; i1 < as; i1 += 2)); do
+            ((ma[i1 + 1] != mb[i1 + 1])) && return 1
+
+            sa=("${la[@]:ma[i1]:ma[i1 + 1]}")
+            sb=("${lb[@]:mb[i1]:mb[i1 + 1]}")
+
+            for ((sl = ${#sa[@]}, i2 = 0; i2 < sl; ++i2)); do
+                [[ "${sa[i2]}" != "${sb[i2]}" ]] && return 1
+            done
+        done
+    else
+# @debug
+#        local tf=(false true)
+#        echo "${FUNCNAME}: invalid condition" >&2
+#        echo "    la == __list__ : ${tf[la == __list__]}" >&2
+#        echo "    lb == __list__ : ${tf[lb == __list__]}" >&2
+#        echo "    #ma == #mb     : ${tf[${#ma[@]} == ${#mb[@]}]}" >&2
+# @debug:end
+        return 1
+    fi
+}
+
+function list.length() {
+    local -n self="${1:?}" result="${2:?}"
+    local -i meta=(${self[3]})
+
+    if ((self == __list__)); then
+        ((result = ${#meta[@]} >> 1))
+# @debug
+#    else
+#        echo "${FUNCNAME}: invalid condition" >&2
+#        return 1
+# @debug:end
+    fi
+}
