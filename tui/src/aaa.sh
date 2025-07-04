@@ -1,3 +1,4 @@
+# csi 1000 - 1003, 1006, 2004
 function tui.input() {
     local a b LC_ALL="C" IFS=""
 
