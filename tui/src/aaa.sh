@@ -35,7 +35,7 @@ function tui.input() {
 
                                     case ${b} in
                                     *$'\x1b\x5b\x32\x30\x31\x7e')
-                                        echo -n "${b::${#b}-6}" | xxd
+                                        echo -n "${b::${#b}-6}"
                                         b=
                                         break
                                     ;;
@@ -43,18 +43,18 @@ function tui.input() {
                                 done
                             ;;
                             *)
-                                echo -n "${b}${a}" | xxd
+                                echo -n "${b}${a}"
                             ;;
                             esac
                         ;;
                         *)
-                            echo -n "${b}${a}" | xxd
+                            echo -n "${b}${a}"
                             b=
                         ;;
                         esac
                     ;;
                     *)
-                        echo -n "${b}${a}" | xxd
+                        echo -n "${b}${a}"
                         b=
                     ;;
                     esac
@@ -64,7 +64,7 @@ function tui.input() {
                     while read -srn1 -d "" a; do
                         case ${a} in
                         [Mm])
-                            echo -n "${b}${a}" | xxd
+                            echo -n "${b}${a}"
                             b=
                             break
                         ;;
@@ -75,19 +75,19 @@ function tui.input() {
                     done
                 ;;
                 *)
-                    echo -n "${b}${a}" | xxd
+                    echo -n "${b}${a}"
                     b=
                 ;;
                 esac
             ;;
             *)
-                echo -n "${b}${a}" | xxd
+                echo -n "${b}${a}"
                 b=
             ;;
             esac
         ;;
         *)
-            echo -n "${a}" | xxd
+            echo -n "${a}"
         ;;
         esac
     done
