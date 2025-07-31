@@ -1,4 +1,7 @@
 step() {
+    # a  n0, b  n1, c  n2, d  n3, e  n4, f  n5, g  n6, h  n7, i  n8, # neighbor count 0..8
+    # j  tl,      , k  tr, l  cl,      , m  cr, n  bl,      , o  br
+    # p ~tl, q ~tc, r ~tr, s ~cl, t ~cc, u ~cr, v ~bl, w ~bc, x ~br
     local -i {a..x}
     ((q= ~$8,p= ~(j=$8<<1|1&$3>>63),r= ~(k=0x7fffffffffffffff&$8>>1|$1<<63)))
     ((t= ~$5,s= ~(l=$5<<1|1&$6>>63),u= ~(m=0x7fffffffffffffff&$5>>1|$4<<63)))
