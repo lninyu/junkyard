@@ -182,3 +182,53 @@ function utils.listEntries() {
         fi
     done
 }
+
+util.uniq() {
+    local -n uniq="${1:?}" list="${2:-${1}}"
+    local -A temp
+    local item
+
+    for item in "${list[@]}"; do
+        temp["${item}"]=
+    done
+
+    uniq=("${!temp[@]}")
+}
+
+util.stacktrace() {
+    shopt -q extdebug
+    local -i ext=${?} idx offset=${2:-0} len=${#FUNCNAME[@]}
+    local -a fun=("${FUNCNAME[@]:offset:len-offset-1}")
+    local -n result="${1:?}"
+    local -r IFS=$'\n'
+    local -A map=()
+    local    tmp
+
+    util.uniq fun
+
+    shopt -s extdebug
+
+    for tmp in $(declare -F "${fun[@]}"); do
+        map[${tmp%% *}]="${tmp##* }"
+    done
+
+    (( ext )) && shopt -u extdebug
+
+    for ((idx = offset; idx < len - 1; ++idx)); do
+        result+=("    at ${FUNCNAME[idx]}(${map[${FUNCNAME[idx+1]:-\ }]:-${BASH_SOURCE[-1]}}:${BASH_LINENO[idx]})")
+    done
+
+    result+=("    at <main>(${BASH_SOURCE[-1]})")
+}
+
+util.error() {
+    local -a trace=()
+    util.stacktrace trace
+
+    printf "%s\n" "${1:-"Error"}: ${2:-"${BASH_SOURCE[-1]} was blown up."}" "${@:3}" "${trace[@]}" >& 2
+}
+
+util.abort() {
+    util.error "${@}"
+    exit 1
+}
