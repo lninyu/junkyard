@@ -46,3 +46,19 @@ sparse.copy() { # (src, src_offset, dest, dest_offset, length)
         fi
     done
 }
+
+idxpos() { # (result, array, index)
+    local -n a=${2:?}
+    local -i b=${3:?} c d=0 e=${#a[@]}-1
+    local -a f=("${!a[@]}")
+
+    while (( c = d + e >> 1, d <= e )); do
+        if (( f[c] == b )); then
+            (( ${1:?} = c )); return
+        fi
+
+        (( f[c] < b ? (d = c + 1) : (e = c - 1) ))
+    done
+
+    return 1
+}
