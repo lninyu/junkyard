@@ -13,3 +13,12 @@ sparse.shiftCopy() {
         a[c+$3]="${b[c]}"
     done
 }
+
+sparse.shiftCopyIfEmpty() {
+    local -n a=${1:?} b=${2:?}
+    local -i c=${3:?}
+
+    for c in "${!b[@]}"; do
+        builtin : "${a[c+$3]:="${b[c]}"}"
+    done
+}
