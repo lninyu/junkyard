@@ -1,7 +1,7 @@
 function sparse::bounds() {
-    local IFS=$'\40' LC_ALL=C a
-
     [[ ${!1@a} == *a* ]] || return 1
+
+    local IFS=$'\40' LC_ALL=C a
 
     # If $1 == parameter, then `local -n parameter=$1` would create
     # a circular reference: parameter -> parameter.
