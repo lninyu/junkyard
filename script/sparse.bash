@@ -20,7 +20,7 @@ function sparse::bounds() {
     printf -v "${2:?}" %d "${a%% *}"
 
     # [2 ** 63] wraps to [0], 2 ** 63 is 19-digit.
-    a="${a: -19}"
+    a="${a:${#a}<19?-${#a}:-19}"
 
     printf -v "${3:?}" %d "${a##* }"
 }
