@@ -8,17 +8,14 @@ function sparse::bounds() {
     # If $1 == parameter, then `local -n parameter=$1` would create
     # a circular reference: parameter -> parameter.
     if [[ ${1:?} == b ]]; then
-        ((${#b[@]})) || return 1
-
         # shellcheck disable=2154
         a="${!b[*]}" # direct
     else
         local -n c=${1}
-
-        ((${#c[@]})) || return 1
-
         a="${!c[*]}"
     fi
+
+    ((${#a[@]})) || return 1
 
     printf -v "${2:?}" %d "${a%% *}"
 
