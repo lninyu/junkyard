@@ -1,13 +1,20 @@
+# # version(Bash >= 4.3)
+# sparse::bounds <list> <minidx> <maxidx>
 function sparse::bounds() {
     local IFS=" " LC_ALL=C a
 
     # If $1 == parameter, then `local -n parameter=$1` would create
     # a circular reference: parameter -> parameter.
     if [[ ${1:?} == b ]]; then
+        ((${#b[@]})) || return
+
         # shellcheck disable=2154
         a="${!b[*]}" # direct
     else
         local -n c=${1}
+
+        ((${#c[@]})) || return
+
         a="${!c[*]}"
     fi
 
