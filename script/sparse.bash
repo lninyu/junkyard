@@ -1,3 +1,4 @@
+# sparse::bounds <list> <result_min> <result_max>
 function sparse::bounds() {
     [[ ${!1@a} == *a* ]] || return 1
 
@@ -22,4 +23,27 @@ function sparse::bounds() {
     a="${a:${#a}<19?0:-19}"
 
     printf -v "${3:?}" %d "${a##* }"
+}
+
+# sparse::rangedBounds <keys> <result_min> <result_max> <range_min> <range_max>
+function sparse::rangedBounds() {
+    local -nr keys=${1:?} head=${2:?} tail=${3:?}
+    local -ir rmin=${4:?} rmax=${5:?}
+    local -i lo mi hi
+
+    ((lo = 0, hi = tail = ${#keys[@]} - 1))
+
+    while ((lo <= hi)); do
+        ((keys[mi = lo + hi >> 1] < rmax ? (lo = (tail = mi) + 1) : (hi = mi - 1)))
+    done
+
+    ((lo = 0, hi = tail))
+
+    while ((lo <= hi)); do
+        ((keys[mi = lo + hi >> 1] < rmin ? (lo = mi + 1) : (hi = (head = mi) - 1)))
+    done
+
+    if ((keys[head] < rmin || rmax <= keys[tail])); then
+        ((!(head = tail = -1)))
+    fi
 }
